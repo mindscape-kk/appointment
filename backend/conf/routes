@@ -1,0 +1,2 @@
+# Translation
+GET /v1/hello co.mscp.appointment.control.HelloController.getHello(token: String)
