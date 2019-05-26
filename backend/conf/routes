@@ -1,2 +1,4 @@
 # Translation
 GET /v1/hello co.mscp.appointment.control.HelloController.getHello(token: String)
+
+POST /v1/:institute/resource co.mscp.appointment.control.ResourceController.create(institute: String,token: String)
