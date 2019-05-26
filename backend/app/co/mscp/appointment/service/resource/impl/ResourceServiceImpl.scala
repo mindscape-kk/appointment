@@ -13,7 +13,7 @@ class ResourceServiceImpl @Inject() (dao: ResourceDao,auth: AuthenticationServic
 
     if(true) {
 
-      //throw new ServiceError()
+      throw new ServiceError(ServiceError.Server(),"test",null)
 
     }
 
