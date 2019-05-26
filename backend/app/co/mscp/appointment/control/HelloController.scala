@@ -6,6 +6,7 @@ import co.mscp.appointment.service.hello.HelloService
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, Action, ControllerComponents}
 
+
 class HelloController @Inject() (cc: ControllerComponents, hello: HelloService)
   extends AbstractController(cc)
 {
