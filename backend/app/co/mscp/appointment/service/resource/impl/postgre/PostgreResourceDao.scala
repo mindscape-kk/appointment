@@ -30,7 +30,7 @@ trait ResourcesComponent {
     /** The user defined properties column */
     def userDefinedProperties = column[JsValue]("USER_DEFINED_PROPERTIES")
 
-    def * = (id, `type`, name, description, userDefinedProperties) <> ((Resource.apply _).tupled, Resource.unapply _)
+    def * = (id, `type`, name, description?, userDefinedProperties?) <> ((Resource.apply _).tupled, Resource.unapply _)
   }
 
 }

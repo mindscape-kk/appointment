@@ -6,8 +6,8 @@ case class Resource(
                      id: String,
                      `type`: String,
                      name: String,
-                     description: String,
-                     userDefinedProperties: JsValue)
+                     description: Option[String],
+                     userDefinedProperties: Option[JsValue])
 
 
 object Resource {
