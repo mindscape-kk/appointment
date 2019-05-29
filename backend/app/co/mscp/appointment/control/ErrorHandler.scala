@@ -7,8 +7,8 @@ import scala.concurrent.Future
 
 class ErrorHandler extends HttpErrorHandler{
   override def onClientError(request: RequestHeader, statusCode: Int,
-    message: String): Future[Result] = super.onClientError(request, statusCode, message)
+    message: String): Future[Result] = return  null
 
   override def onServerError(request: RequestHeader,
-    exception: Throwable): Future[Result] = super.onServerError(request, exception)
+    exception: Throwable): Future[Result] = return  null
 }
