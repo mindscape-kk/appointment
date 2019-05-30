@@ -5,12 +5,10 @@ import javax.inject.Inject
 import play.api.libs.json._
 import play.api.mvc.{AbstractController, ControllerComponents}
 
-import scala.concurrent.{Await, Future}
+import scala.concurrent.ExecutionContext
 
-class ResourceController @Inject()(cc: ControllerComponents, service: ResourceService)
+class ResourceController @Inject()(cc: ControllerComponents, service: ResourceService)(implicit ec: ExecutionContext)
   extends AbstractController(cc) {
-
-  import scala.concurrent.duration._
 
 
   implicit val reads: Reads[Resource] = Json.reads[Resource]
@@ -21,7 +19,7 @@ class ResourceController @Inject()(cc: ControllerComponents, service: ResourceSe
     println(token)
     val resource: Resource = request.body
 
-    Future.successful(Ok(Json.toJson(Await.result(service.create(token, institute, resource), 5000 millis))))
+    service.create(token, institute, resource) map (r => Ok(Json.toJson(r)))
   }
 
 
