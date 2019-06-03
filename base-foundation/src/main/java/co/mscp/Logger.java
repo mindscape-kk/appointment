@@ -1,6 +1,7 @@
 package co.mscp;
 
-import com.uzabase.jharmony.logging.JavaLogger;
+
+import co.mscp.logging.JavaLogger;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

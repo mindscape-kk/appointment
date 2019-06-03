@@ -1,8 +1,8 @@
 package co.mscp.logging;
 
-import com.uzabase.jharmony.Cache;
-import com.uzabase.jharmony.Logger;
 
+import co.mscp.Cache;
+import co.mscp.Logger;
 
 public class JavaLogger extends Logger {
     

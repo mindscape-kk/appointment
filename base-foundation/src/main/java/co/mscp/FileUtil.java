@@ -1,11 +1,3 @@
-/*---[SPEEDA Radar]--------------------------------------------m(._.)m--------*\
- |
- |  Copyright (c) 2018 Uzabase Inc. all rights reserved.
- |
- |  Author: Asia PDT (asia-pdt@uzabase.com)
- |
- *//////////////////////////////////////////////////////////////////////////////
-
 
 package co.mscp;
 

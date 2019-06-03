@@ -24,4 +24,4 @@ lazy val backend = (project in file("backend"))
   .dependsOn(common, baseFoundation)
 
 lazy val client = project in file("jvm-client")
-lazy val spec = project in file("spec")
+lazy val spec = (project in file("spec")).dependsOn(common, baseFoundation)
