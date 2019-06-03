@@ -1,9 +1,13 @@
 package co.mscp;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -14,24 +18,26 @@ import java.util.regex.Pattern;
 
 
 public class DockerUtil {
-    
+
+    private static final ObjectMapper MAPPER = new ObjectMapper();
     private static PrintStream logWriter = null;
-    
+    private static Thread logThread = null;
+
     private static void log(String msg) {
-        System.out.println(msg);
+        Logger.of(DockerUtil.class).info(msg);
         logToFile(msg);
     }
-    
+
     private static void logDocker(String msg) {
         logToFile("Docker: " + msg);
     }
-    
+
     private static void logToFile(String msg)  {
         if(logWriter == null) {
             try {
                 logWriter = new PrintStream(new FileOutputStream(
-                    new File(FileUtil.logsDir(), "docker-util.log"), true));
-    
+                        getLogFile(), true));
+
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> logWriter.close()));
             } catch (FileNotFoundException ex) {
                 logWriter = System.out;
@@ -40,30 +46,36 @@ public class DockerUtil {
         logWriter.println(msg);
         logWriter.flush();
     }
-    
-    
+
+    public static File getLogFile() {
+        return new File(FileUtil.logsDir(), "docker-util.log");
+    }
+
+
     private static <T> T forEachOutputLine(Process p, boolean processAll,
-        Function<String, T> fn) throws IOException
+                                           Function<String, T> fn) throws IOException
     {
         BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String line;
         T result = null;
-        
+
         while((result == null || processAll)
-            && (line = in.readLine()) != null)
+                && (line = in.readLine()) != null)
         {
             T thisResult = fn.apply(line);
             if(thisResult != null && result == null) {
                 result = thisResult;
             }
         }
-        
+
         return result;
     }
+
 
     private static File datafile(String label) throws IOException {
         return FileUtil.tmpFile(label);
     }
+
 
     private static String resolveLabelToId(String label) throws IOException {
         File file = datafile(label);
@@ -78,21 +90,21 @@ public class DockerUtil {
         return containerId;
     }
 
-    
+
     public static Process dockerExec(String... params) throws IOException {
         String[] commands = new String[params.length + 2];
         commands[0] = "/usr/bin/env";
         commands[1] = "docker";
 
         System.arraycopy(params, 0, commands, 2, params.length);
-        
+
         ProcessBuilder builder = new ProcessBuilder(commands);
         builder.redirectErrorStream(true);
         logDocker("> Running: " + String.join(" ", commands));
         return builder.start();
     }
-    
-    
+
+
     public static void dockerExecThrough(String... params) throws IOException, InterruptedException {
         Process p = dockerExec(params);
 
@@ -110,13 +122,22 @@ public class DockerUtil {
     }
 
 
+    public static void insertLogSeparator() {
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+        logDocker("");
+        logDocker("======================================");
+        logDocker(f.format(new Date()));
+        logDocker("======================================");
+    }
+
+
     public static String build(URL dockerDir) throws IOException, InterruptedException {
         String path = FileUtil.getPathDecoded(dockerDir);
-        
+
         log("Building docker image at: " + path);
-        
+
         Process p = dockerExec("build", path);
-        
+
         Matcher matcher = Pattern.compile("Successfully built (\\p{Alnum}*)").matcher("");
 
         AtomicReference<String> lastLine = new AtomicReference<>("");
@@ -130,22 +151,31 @@ public class DockerUtil {
             }
             return null;
         });
-        
+
         log("Image created: " + imageId);
 
         if(p.waitFor() != 0) {
             throw new MonitoredError("Could not build docker image (see logs for details): " + lastLine.get());
         }
-        
+
         return imageId;
     }
-    
-    
+
+
     public static String run(String label, String imageName,
-            Map<Integer, Integer> portMapping, String environment)
-        throws IOException, InterruptedException
+                             Map<Integer, Integer> portMapping, String... environment)
+            throws IOException, InterruptedException
     {
-        log("Running docker image: " + imageName);
+        return run(label, imageName, portMapping, ContainerNetwork.host(), environment);
+    }
+
+
+    public static String run(String label, String imageName,
+                             Map<Integer, Integer> portMapping, ContainerNetwork network,
+                             String... environment)
+            throws IOException, InterruptedException
+    {
+        log("Running docker image \"" + label + "\": " + imageName);
 
         List<String> paramsList = new ArrayList<>();
         paramsList.add("run");
@@ -154,14 +184,15 @@ public class DockerUtil {
             paramsList.add("-p");
             paramsList.add(v.toString() + ":" + k.toString());
         });
-        if(environment != null) {
+        for (String env: environment) {
             paramsList.add("-e");
-            paramsList.add(environment);
+            paramsList.add(env);
         }
+        paramsList.add(containerNetworkToArg(network));
         paramsList.add(imageName);
-        
+
         String[] params = new String[paramsList.size()];
-        
+
         Process p = dockerExec(paramsList.toArray(params));
 
         AtomicReference<String> lastLine = new AtomicReference<>("");
@@ -170,11 +201,11 @@ public class DockerUtil {
             logDocker(line);
             return line;
         });
-    
+
         if(p.waitFor() != 0) {
             throw new MonitoredError("Could not start docker container (see logs for details): " + lastLine.get());
         }
-        
+
         log("Container ID: " + containerId);
 
         PrintWriter writer = new PrintWriter(FileUtil.tmpFile(label));
@@ -183,10 +214,10 @@ public class DockerUtil {
 
         return containerId;
     }
-    
+
 
     public static void waitForContainerWithLabel(String label, String flag)
-        throws IOException
+            throws IOException
     {
         final String containerId = resolveLabelToId(label);
         if(containerId == null) {
@@ -219,22 +250,51 @@ public class DockerUtil {
     }
 
 
+    public static void monitorLogs(String label) throws IOException {
+        if(logThread != null) {
+            return;
+        }
+
+        final String containerId = resolveLabelToId(label);
+        if(containerId == null) {
+            throw new MonitoredError("No container with label: " + label);
+        }
+
+        Process p = dockerExec("logs", "-f", containerId);
+
+        logThread = new Thread(() -> {
+            try {
+                log("Monitoring: " + label);
+                forEachOutputLine(p, true, line -> {
+                    logDocker(label + ": " + line);
+                    return null;
+                });
+                log("Container stopped: " + label);
+            } catch (IOException e) {
+                Logger.of(DockerUtil.class).error(e);
+            }
+        });
+
+        logThread.start();
+    }
+
+
     @Deprecated
     public static void waitForContainerFlag(String containerId, String flag)  {
         throw new UnsupportedOperationException("This method is deprecated");
     }
-    
-    
+
+
     public static void stop(String label) throws IOException, InterruptedException {
         final String containerId = resolveLabelToId(label);
         if(containerId == null) {
             return;
         }
 
-        log("Stopping docker container: " + containerId);
+        log("Stopping container: " + label);
         dockerExecThrough("stop", containerId);
 
-        log("Removing docker container: " + containerId);
+        log("Removing container: " + label);
         dockerExecThrough("rm", "-f", "-v", containerId);
 
         if(datafile(label).delete()) {
@@ -254,7 +314,6 @@ public class DockerUtil {
         AtomicBoolean found = new AtomicBoolean(false);
 
         forEachOutputLine(p, false, line -> {
-            Logger.of(DockerUtil.class).info(line);
             if(line.equals(containerId)) {
                 found.set(true);
                 return true;
@@ -265,15 +324,56 @@ public class DockerUtil {
         return found.get();
     }
 
-    
+
     public static void remove(String imageId) throws IOException, InterruptedException {
         log("Removing docker image: " + imageId);
         dockerExecThrough("rmi", imageId);
     }
-    
-    
+
+
+    private static JsonNode inspect(String label) throws IOException {
+        final String containerId = resolveLabelToId(label);
+        if(containerId == null) {
+            throw new MonitoredError("No container with label: " + label);
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        Process p = dockerExec("inspect", containerId);
+        forEachOutputLine(p, true, builder::append);
+
+        return MAPPER.readTree(builder.toString());
+    }
+
+
+    public static String  getIpAddressOf(String label) throws IOException {
+        return inspect(label)
+                .get(0)
+                .get("NetworkSettings")
+                .get("IPAddress")
+                .asText();
+    }
+
+
+    private static String containerNetworkToArg(ContainerNetwork n) {
+        final String prefix = "--network=";
+        switch (n.getType()) {
+            case HOST:
+                return prefix + "host";
+            case BRIDGE:
+                return prefix + "bridge";
+            case CONTAINER:
+                return prefix + "container:" + n.getParam();
+            case NONE:
+                return prefix + "none";
+            case CUSTOM:
+                return prefix + n.getParam();
+        }
+        return prefix + "host";
+    }
+
+
     private DockerUtil() {
         // Nothing
     }
-
 }

@@ -1,4 +1,8 @@
-package co.mscp;
+package co.mscp.medicom.appointment.spec;
+
+import co.mscp.ContainerNetwork;
+import co.mscp.DockerUtil;
+import co.mscp.FluentMap;
 
 import java.io.IOException;
 import java.net.URL;
@@ -30,7 +34,7 @@ public class DockerHelper {
     public static final int DB_PORT = 5432;
 
     public static final DockerParams DB = new DockerParams("medicom-db", "/db/Dockerfile",
-            Map.of(5432, DB_PORT));
+            FluentMap.with(5432, DB_PORT));
 
 
 
