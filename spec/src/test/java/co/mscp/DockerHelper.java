@@ -39,9 +39,9 @@ public class DockerHelper {
 
     public static void runDocker(DockerParams p) throws IOException, InterruptedException {
         if(!co.mscp.DockerUtil.isRunning(p.label)) {
-            co.mscp.DockerUtil.insertLogSeparator();
+            ///co.mscp.DockerUtil.insertLogSeparator();
 
-            URL dockerFile = CommonSteps.class.getResource(p.dir);
+            URL dockerFile = DockerHelper.class.getResource(p.dir);
             if(dockerFile == null) {
                 throw new Error("Docker file could not found at " + p.dir);
             }
