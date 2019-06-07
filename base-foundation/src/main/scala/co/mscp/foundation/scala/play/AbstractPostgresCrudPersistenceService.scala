@@ -1,4 +1,4 @@
-package co.mscp.foundation.play
+package co.mscp.foundation.scala.play
 
 class AbstractPostgresCrudPersistenceService {
 

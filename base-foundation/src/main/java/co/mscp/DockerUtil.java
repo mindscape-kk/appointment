@@ -1,5 +1,6 @@
 package co.mscp;
 
+import co.mscp.logging.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -162,12 +163,12 @@ public class DockerUtil {
     }
 
 
-    public static String run(String label, String imageName,
-                             Map<Integer, Integer> portMapping, String... environment)
-            throws IOException, InterruptedException
-    {
-        return run(label, imageName, portMapping, ContainerNetwork.host(), environment);
-    }
+//    public static String run(String label, String imageName,
+//                             Map<Integer, Integer> portMapping, String... environment)
+//            throws IOException, InterruptedException
+//    {
+//        return run(label, imageName, portMapping, ContainerNetwork.host(), environment);
+//    }
 
 
     public static String run(String label, String imageName,

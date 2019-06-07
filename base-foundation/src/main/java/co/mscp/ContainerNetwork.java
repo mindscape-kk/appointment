@@ -34,7 +34,7 @@ public class ContainerNetwork {
     private final String p;
     
     
-    private ContainerNetwork(Type t, String param) {
+    private ContainerNetwork(ContainerNetwork.Type t, String param) {
         this.t = t;
         this.p = param;
     }
