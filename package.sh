@@ -10,7 +10,7 @@ docker tag "$IMG:$VER" "$IMG:$TAG"
 
 DB_IMG=docker.mscp.cp/medicom/appointment-db
 
-docker build -t ${OLD_NAME} spec/src/test/resources/docker/db
+docker build -t "${DB_IMG}:${VER}" spec/src/test/resources/docker/db
 docker tag "$DB_IMG:$VER" "$DB_IMG:$TAG"
 
 echo "Database: $DB_IMG:$TAG"

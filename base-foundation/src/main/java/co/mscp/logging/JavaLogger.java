@@ -80,7 +80,7 @@ public class JavaLogger extends Logger {
     // --- METHODS --- //
 
     @Override
-    public void log(Level level, boolean alert, String message, Object... params) {
+    public void log(Logger.Level level, boolean alert, String message, Object... params) {
         final java.util.logging.Level jLevel;
         switch (level) {
             case INFO: jLevel = java.util.logging.Level.INFO; break;
