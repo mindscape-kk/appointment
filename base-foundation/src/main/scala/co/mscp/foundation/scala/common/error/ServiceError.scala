@@ -4,6 +4,7 @@ import java.io.{ByteArrayOutputStream, PrintWriter}
 import java.nio.charset.StandardCharsets
 
 import co.mscp.foundation.common.error.ServiceError.ErrorCode
+import co.mscp.net.HttpErrorStatus
 import play.api.libs.json.{JsObject, Json}
 
 
@@ -16,7 +17,7 @@ object ServiceError {
   case class Validation() extends ErrorCode
 }
 
-
+w
 class ServiceError(code: ServiceError.ErrorCode, message: String, e: Exception)
   extends RuntimeException(code + ": " + message, e)
 {
@@ -46,8 +47,11 @@ class InternalServerError(message: String, e: Exception)
 }
 
 
-class ClientError(message: String)
+class ClientError(code: HttpErrorStatus, message: String)
   extends ServiceError(ServiceError.Client(), message, null)
+{
+  def this(code: HttpErrorStatus) = this(code, code.reason());
+}
 
 
 class ValidationError(typeName: String, propertyPath: String, was: String, excpected: String)

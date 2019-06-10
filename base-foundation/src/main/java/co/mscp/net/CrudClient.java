@@ -14,7 +14,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -99,7 +98,7 @@ public class CrudClient<T> {
     
     protected <E> E performRequest(
         HttpUriRequest request,
-        Class<E> cls, Class<?> genericParam) throws HttpError
+        Class<E> cls, Class<?> genericParam) throws co.mscp.foundation.common.error.ServiceError, IOException
     {
         try(CloseableHttpResponse response = client.execute(request)) {
             final int code = response.getStatusLine().getStatusCode();
@@ -113,28 +112,27 @@ public class CrudClient<T> {
                 return Json.parse(content, cls, genericParam);
             }
             
-            final HttpErrorStatus status = HttpErrorStatus.of(code);
-            if(status != null) {
-                final ContentType contentType = ContentType.get(
-                    response.getEntity());
-                if(contentType != null
-                    && contentType.getMimeType()
-                    .equalsIgnoreCase("application/json")) {
-                    String content = EntityUtils.toString(response.getEntity(),
-                        StandardCharsets.UTF_8.name());
+            final ContentType contentType = ContentType.get(
+                response.getEntity());
 
-                    HttpErrorModel errModel = Json.parse(content,
-                        HttpErrorModel.class);
-                    throw errModel.toHttpError();
-                }
-                throw new HttpError(status);
+            if(contentType != null
+                && contentType.getMimeType()
+                .equalsIgnoreCase("application/json"))
+            {
+                String content = EntityUtils.toString(response.getEntity(),
+                    StandardCharsets.UTF_8.name());
+
+                co.mscp.foundation.common.error.ServiceError errModel
+                    = Json.parse(content,
+                        co.mscp.foundation.common.error.ServiceError.class);
+
+                throw errModel;
             }
-            
-            throw new HttpError(HttpErrorStatus.SERVICE_UNAVAILABLE,
-                "Response code returned by server is invalid: " + code);
-            
-        } catch(IOException e) {
-            throw new HttpError(HttpErrorStatus.SERVICE_UNAVAILABLE, e);
+
+            HttpErrorStatus status = HttpErrorStatus.of(
+                    response.getStatusLine().getStatusCode());
+
+            throw new co.mscp.foundation.common.error.ClientError(status);
         }
     }
     
@@ -149,25 +147,29 @@ public class CrudClient<T> {
     }
     
     
-    public T read() throws HttpError {
+    public T read() throws co.mscp.foundation.common.error.ServiceError, IOException {
         return performRequest(new HttpGet(host), typeReference, null);
     }
     
     
-    public T read(String id) throws HttpError {
+    public T read(String id)
+        throws co.mscp.foundation.common.error.ServiceError, IOException
+    {
         return performRequest(new HttpGet(host + "/" + id), typeReference,
             null);
     }
     
     
-    public PartialList<T> read(int offset, int size) throws HttpError {
+    public PartialList<T> read(int offset, int size)
+        throws co.mscp.foundation.common.error.ServiceError, IOException
+    {
         return read(offset, size, null);
     }
     
     
     @SuppressWarnings("unchecked")
     public PartialList<T> read(int offset, int size, Map<String, String> params)
-        throws HttpError
+        throws co.mscp.foundation.common.error.ServiceError, IOException
     {
         URIBuilder builder = uri("")
             .addParameter(SIZE, Integer.toString(size))
@@ -182,7 +184,7 @@ public class CrudClient<T> {
     }
     
     
-    public T create(T newEntity) throws HttpError {
+    public T create(T newEntity) throws co.mscp.foundation.common.error.ServiceError, IOException {
         HttpPost request = new HttpPost(host);
         request.setEntity(new StringEntity(Json.toString(newEntity),
             ContentType.APPLICATION_JSON));
@@ -190,7 +192,9 @@ public class CrudClient<T> {
     }
     
     
-    public T update(String id, T updatedEntity) throws HttpError {
+    public T update(String id, T updatedEntity)
+        throws co.mscp.foundation.common.error.ServiceError, IOException
+    {
         HttpPut request = new HttpPut(host + "/" + id);
         request.setEntity(new StringEntity(Json.toString(updatedEntity),
             ContentType.APPLICATION_JSON));
@@ -198,7 +202,9 @@ public class CrudClient<T> {
     }
     
     
-    public T update(T updatedEntity) throws HttpError {
+    public T update(T updatedEntity)
+        throws co.mscp.foundation.common.error.ServiceError, IOException
+    {
         HttpPut request = new HttpPut(host);
         request.setEntity(new StringEntity(Json.toString(updatedEntity),
             ContentType.APPLICATION_JSON));
@@ -207,7 +213,7 @@ public class CrudClient<T> {
     
     
     public T update(String id, T updatedEntity, Map<String, String> params)
-        throws HttpError
+        throws co.mscp.foundation.common.error.ServiceError, IOException
     {
         URIBuilder builder = uri("/" + id);
         
@@ -223,7 +229,7 @@ public class CrudClient<T> {
     
     
     public T updateProperty(String id, String property, String value)
-        throws HttpError
+        throws co.mscp.foundation.common.error.ServiceError, IOException
     {
         HttpPut request = new HttpPut(
             host + "/" + id + "/" + property + "/" + StringUtil.encodeUrl(value));
@@ -231,7 +237,7 @@ public class CrudClient<T> {
     }
     
     
-    public T delete(String id) throws HttpError {
+    public T delete(String id) throws co.mscp.foundation.common.error.ServiceError, IOException {
         HttpDelete request = new HttpDelete(host + "/" + id);
         return performRequest(request, typeReference, null);
     }

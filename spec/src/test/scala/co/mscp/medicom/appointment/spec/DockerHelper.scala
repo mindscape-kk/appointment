@@ -23,10 +23,12 @@ object DockerHelper {
     Map(9000 -> 9000))
 
 
+  def getHostAddress: String = NetworkUtil.getHostInet.getHostAddress
+
   def runBackend(): Unit = if(!DockerUtil.isRunning(BACKEND_LABEL)){
-    val host = NetworkUtil.getHostInet().getHostAddress
     DockerUtil.run(BACKEND_LABEL, "docker.mscp.co/medicom/appointment:local-test",
-      Map(9000 -> 9000), ContainerNetwork.bridge(), Seq(s"MEDICOM_DB_URL=jdbc:postgresql://${host}:${DB_PORT}/medicom"))
+      Map(9000 -> 9000), ContainerNetwork.bridge(),
+      Seq(s"MEDICOM_DB_URL=jdbc:postgresql://$getHostAddress:$DB_PORT/medicom"))
 
     co.mscp.DockerUtil.waitForContainerWithLabel(BACKEND_LABEL, BACKEND_LOAD_FLAG)
   }

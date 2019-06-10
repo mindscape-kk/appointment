@@ -5,16 +5,23 @@ import cucumber.api.scala.{EN, ScalaDsl}
 
 class StepDefinitions extends ScalaDsl with EN {
 
+  var token: String = _
+  var encryptionKey: String = _
+
+
   Before() { (_) =>
     DockerHelper.runAll()
   }
 
-  Given("client has user token and encryption key") {
-    Logger.of(this).info("client has user token and encryption key")
+  Given("client has user token \"([^\"]*)\" and encryption key \"([^\"]*)\"")
+  (token: String, key: String) => {
+    this.token = token
+    this.encryptionKey = key
   }
 
-  When("^client calls \"([^\"]*)\" on \"([^\"]*)\"$") { (arg0: String, arg1: String) =>
-    Logger.of(this).info("client calls %s on %s", arg0, arg1)
+  When("^client calls \"([^\"]*)\" on \"([^\"]*)\"$")
+  (path: String, arg1: String) => {
+
   }
 
   Then("^response should be same as the expected profile$") {
