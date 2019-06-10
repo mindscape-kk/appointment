@@ -1,7 +1,6 @@
 <!-- https://www.playframework.com/documentation/latest/SettingsLogger -->
 <configuration>
 
-  <conversionRule conversionWord="coloredLevel" converterClass="play.api.libs.logback.ColoredLevel" />
 
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>log/application.log</file>

@@ -1,6 +1,6 @@
 package co.mscp.medicom.appointment.spec
 
-import co.mscp.ContainerNetwork
+import co.mscp.{ContainerNetwork, NetworkUtil}
 import co.mscp.foundation.scala.common.DockerUtil
 
 
@@ -11,10 +11,10 @@ object DockerHelper {
 
   private val DB_ENV = Seq("POSTGRES_PASSWORD=medicom")
   private val DB_LOAD_FLAG = "database system is ready to accept connections"
-  private val DB_PORT = 5432
+  private val DB_PORT = 6432
   private val POSTGRES_PORT = 5432
   private val BACKEND_LABEL="appointment-backend"
-  private val BACKEND_LOAD_FLAG="TBD" // <-- TODO set this
+  private val BACKEND_LOAD_FLAG="play.core.server.AkkaHttpServer - Listening for HTTP on"
   private val DB = DockerParams("medicom-db", "/docker/db",
     Map(POSTGRES_PORT -> DB_PORT))
 
@@ -23,9 +23,10 @@ object DockerHelper {
     Map(9000 -> 9000))
 
 
-  def runBackend(): Unit = {
+  def runBackend(): Unit = if(!DockerUtil.isRunning(BACKEND_LABEL)){
+    val host = NetworkUtil.getHostInet().getHostAddress
     DockerUtil.run(BACKEND_LABEL, "docker.mscp.co/medicom/appointment:local-test",
-      Map(9000 -> 9000), ContainerNetwork.bridge(), Seq(/* TODO DB Info Here */))
+      Map(9000 -> 9000), ContainerNetwork.bridge(), Seq(s"MEDICOM_DB_URL=jdbc:postgresql://${host}:${DB_PORT}/medicom"))
 
     co.mscp.DockerUtil.waitForContainerWithLabel(BACKEND_LABEL, BACKEND_LOAD_FLAG)
   }
@@ -67,7 +68,7 @@ object DockerHelper {
   }
 
 
-  def main(args: Array[String]): Unit = runBackend() //stopAll()
+  def main(args: Array[String]): Unit = runAll() //stopAll()
 
 }
 

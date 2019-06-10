@@ -15,7 +15,7 @@ public abstract class Logger {
 
 
     public static Logger of(Class<?> cls) {
-        //return LogbackLogger.of(cls);
+        //return new LogbackLogger(cls);
         return JavaLogger.of(cls);
     }
 
