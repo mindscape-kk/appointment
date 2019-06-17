@@ -4,7 +4,7 @@ version := "0.1"
 
 scalaVersion := "2.12.7"
 
-lazy val baseFoundation = project in file("base-foundation")
+lazy val mmk2 = project in file("mmk2")
 
 lazy val common = project in file("common")
 
@@ -21,10 +21,10 @@ lazy val backend = (project in file("backend"))
       println(s"[VAL] dockerImageName: $path")
     }
   )
-  .dependsOn(common, baseFoundation)
+  .dependsOn(common, mmk2)
 
-lazy val client = project in file("jvm-client")
+lazy val jvmClient = (project in file("jvm-client"))
+  .dependsOn(common, mmk2)
 
 lazy val spec = (project in file("spec"))
-  .dependsOn(common, baseFoundation)
-
+  .dependsOn(jvmClient, mmk2)

@@ -1,6 +1,6 @@
 package co.mscp.appointment.service.resource.impl
 
-import co.mscp.appointment.service.resource.Resource
+import co.mscp.appointment.entity.Resource
 
 import scala.concurrent.Future
 

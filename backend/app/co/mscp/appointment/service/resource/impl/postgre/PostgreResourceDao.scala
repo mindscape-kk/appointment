@@ -1,6 +1,6 @@
 package co.mscp.appointment.service.resource.impl.postgre
 
-import co.mscp.appointment.service.resource.Resource
+import co.mscp.appointment.entity.Resource
 import co.mscp.appointment.service.resource.impl.ResourceDao
 import com.google.inject.Inject
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig, HasDatabaseConfigProvider}
@@ -16,7 +16,7 @@ trait ResourcesComponent {
 
   class Resources(tag: Tag) extends Table[Resource](tag, "RESOURCE") {
     /** The ID column, which is the primary key */
-    def id = column[String]("ID", O.PrimaryKey)
+    def id = column[String]("ID", O.PrimaryKey) /* TODO should be auto inc */
 
     /** The type column */
     def `type` = column[String]("TYPE")
@@ -35,6 +35,8 @@ trait ResourcesComponent {
 
 }
 
+
+
 class PostgreResourceDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) extends ResourcesComponent with ResourceDao with HasDatabaseConfigProvider[MSCPPostgresProfile] {
 
   import profile.api._
@@ -49,10 +51,6 @@ class PostgreResourceDao @Inject()(protected val dbConfigProvider: DatabaseConfi
   def insert(resources: Seq[Resource]): Future[Unit] =
     db.run(this.resources ++= resources).map(_ => ())
 
-
   override def create(resource: Resource): Future[Resource] = insert(resource )
-
-
-
 
 }

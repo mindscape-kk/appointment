@@ -5,10 +5,10 @@ import play.api.mvc.{RequestHeader, Result}
 
 import scala.concurrent.Future
 
-class ErrorHandler extends HttpErrorHandler{
+class ErrorHandler extends HttpErrorHandler {
   override def onClientError(request: RequestHeader, statusCode: Int,
-    message: String): Future[Result] = return  null
+    message: String): Future[Result] = null
 
   override def onServerError(request: RequestHeader,
-    exception: Throwable): Future[Result] = return  null
+    exception: Throwable): Future[Result] = null
 }

@@ -1,11 +1,13 @@
 package co.mscp.appointment.service.resource.impl
 
 import co.mscp.appointment.service.authentication.AuthenticationService
-import co.mscp.appointment.service.resource.{Resource, ResourceService}
+import co.mscp.appointment.service.resource.ResourceService
 import javax.inject.{Inject, Singleton}
-import co.mscp.foundation.common.error.ServiceError
 
-import scala.concurrent.Future;
+import co.mscp.appointment.entity.Resource
+import co.mscp.mmk2.net.ServiceError
+
+import scala.concurrent.Future
 
 @Singleton
 class ResourceServiceImpl @Inject()(dao: ResourceDao, auth: AuthenticationService)
@@ -14,14 +16,12 @@ class ResourceServiceImpl @Inject()(dao: ResourceDao, auth: AuthenticationServic
   override def create(token: String, institute: String, resource: Resource): Future[Resource] = {
 
     if (false) {
-
-      throw new ServiceError(ServiceError.Server(), "test", null)
-
+      throw ServiceError.internal("test")
     }
 
     //TODO: support auth auth.getUser(token) and validate user rights
+    //TODO: resource should belong to institute
 
     dao.create(resource)
-
   }
 }
