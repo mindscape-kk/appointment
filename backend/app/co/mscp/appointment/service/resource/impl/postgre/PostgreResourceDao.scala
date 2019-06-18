@@ -43,9 +43,12 @@ class PostgreResourceDao @Inject()(protected val dbConfigProvider: DatabaseConfi
 
   val resources = TableQuery[Resources]
 
+  val insertQuery = resources returning resources.map(_.id) into ((resource, id) => resource.copy(id = Some(id)))
+
+
   /** Insert a new resouce */
   def insert(resource: Resource): Future[Resource] =
-    db.run(resources += resource).map(_ => resource)
+    db.run(insertQuery += resource)
 
   /** Insert new companies */
   def insert(resources: Seq[Resource]): Future[Unit] =
