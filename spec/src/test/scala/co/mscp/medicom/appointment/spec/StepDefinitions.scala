@@ -8,7 +8,7 @@ import org.scalatest.Matchers._
 
 class StepDefinitions extends ScalaDsl with EN {
 
-  private val host = s"http://localhost:9000"
+  private val host = s"http://localhost:6452"
   private var client: AppointmentClient = _
   private var token: String = _
   private var encryptionKey: String = _
@@ -23,8 +23,7 @@ class StepDefinitions extends ScalaDsl with EN {
     DockerHelper.runAll()
   }
 
-  Given("client has user token {string} and encryption key {string}")
-  (token:String, key:String) => {
+  Given("client has user token {string} and encryption key {string}"){ (token:String,key:String) =>
     client = new AppointmentClient(host, "testInstitute", token)
   }
 
