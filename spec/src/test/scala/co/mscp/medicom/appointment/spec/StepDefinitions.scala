@@ -8,12 +8,12 @@ import org.scalatest.Matchers._
 
 class StepDefinitions extends ScalaDsl with EN {
 
-  private val host = s"http://localhost:6452"
+  private val host = s"http://localhost:"+DockerHelper.BACKEND_PORT
   private var client: AppointmentClient = _
   private var token: String = _
   private var encryptionKey: String = _
 
-  private val inputResource = Resource("1323", "testType", "testName",
+  private val inputResource = Resource(None, "testType", "testName",
     Some("Test Description"),  None /* TODO more values */)
 
   private var outputResource: Resource = _

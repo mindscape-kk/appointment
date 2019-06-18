@@ -16,7 +16,7 @@ trait ResourcesComponent {
 
   class Resources(tag: Tag) extends Table[Resource](tag, "RESOURCE") {
     /** The ID column, which is the primary key */
-    def id = column[String]("ID", O.PrimaryKey) /* TODO should be auto inc */
+    def id = column[String]("ID", O.PrimaryKey,O.AutoInc)
 
     /** The type column */
     def `type` = column[String]("TYPE")
@@ -30,7 +30,7 @@ trait ResourcesComponent {
     /** The user defined properties column */
     def userDefinedProperties = column[JsValue]("USER_DEFINED_PROPERTIES")
 
-    def * = (id, `type`, name, description?, userDefinedProperties?) <> ((Resource.apply _).tupled, Resource.unapply _)
+    def * = (id?, `type`, name, description?, userDefinedProperties?) <> ((Resource.apply _).tupled, Resource.unapply _)
   }
 
 }

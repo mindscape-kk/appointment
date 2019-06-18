@@ -6,7 +6,7 @@ import play.api.libs.json.{JsValue, Json, Reads, Writes}
 
 
 case class Resource(
-  id: String, /* TODO should be optional */
+  id: Option[String],
   `type`: String,
   name: String,
   description: Option[String],
