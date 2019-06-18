@@ -13,8 +13,8 @@ class StepDefinitions extends ScalaDsl with EN {
   private var token: String = _
   private var encryptionKey: String = _
 
-  private val inputResource = Resource(None, "testType", "testName",
-    Some("Test Description"),  None /* TODO more values */)
+  private val inputResource = new Resource("testType", "testName",
+    "Test Description",  None /* TODO more values */)
 
   private var outputResource: Resource = _
 
@@ -32,7 +32,12 @@ class StepDefinitions extends ScalaDsl with EN {
   }
 
   Then("response should be same as request"){ () =>
-    /* TODO check all fields other than ID are equal */
+    outputResource should have (
+      'type ("testType"),
+      'name ("testName"),
+      'description (Some("Test Description")),
+      'userDefinedProperties (None)
+    )
   }
 
   Then("ID in response should not be null"){ () =>

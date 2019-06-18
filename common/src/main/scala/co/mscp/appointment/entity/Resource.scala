@@ -14,7 +14,7 @@ case class Resource(
 {
   def this(t: String, name: String, description: String,
     userDefinedProperties: Option[JsValue]) =
-    this(null, t, name, Some(description), userDefinedProperties)
+      this(None, t, name, Some(description), userDefinedProperties)
 }
 
 
