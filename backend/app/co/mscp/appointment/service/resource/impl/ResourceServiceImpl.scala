@@ -15,6 +15,9 @@ class ResourceServiceImpl @Inject()(dao: ResourceDao, auth: AuthenticationServic
 
   override def create(token: String, institute: String, resource: Resource): Future[Resource] = {
 
+    // TODO validate institute
+    // TODO if institute is "my" retrieve actual institute by token
+
     if (false) {
       throw ServiceError.internal("test")
     }

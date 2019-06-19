@@ -21,6 +21,7 @@ class StepDefinitions extends ScalaDsl with EN {
 
   Before() { (_) =>
     DockerHelper.runAll()
+    client = new AppointmentClient(host, "testInstitute", "mandy")
   }
 
   Given("client has user token {string} and encryption key {string}"){ (token:String,key:String) =>
