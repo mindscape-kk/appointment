@@ -1,21 +1,22 @@
 package co.mscp.appointment.control
 
-import javax.inject.Inject
-
 import co.mscp.appointment.entity.Resource
+import co.mscp.appointment.service.authentication.AuthenticationService
 import co.mscp.appointment.service.resource.ResourceService
-import play.api.libs.json._
-import play.api.mvc.{AbstractController, Action, ControllerComponents}
+import co.mscp.foundation.scala.play.AbstractCrudController
+import javax.inject.Inject
+import play.api.mvc.{Action, ControllerComponents}
 
 import scala.concurrent.ExecutionContext
 
 
-class ResourceController @Inject()(cc: ControllerComponents, service: ResourceService)
+class ResourceController @Inject()(cc: ControllerComponents, service: ResourceService, auth: AuthenticationService)
   (implicit ec: ExecutionContext)
-  extends AbstractController(cc)
+  extends AbstractCrudController[Resource](cc, classOf[Resource])
 {
-  def create(institute: String, token: String): Action[Resource] =
-    Action.async(parse.json[Resource])(request => service
-      .create(token, institute, request.body)
-      .map(r => Ok(Json.toJson(r))))
+
+  def create(institute: String, token: String): Action[Resource] = createAction {
+    resource => service.create(token, institute, resource)
+  }
+
 }

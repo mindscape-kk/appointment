@@ -1,5 +1,7 @@
 package co.mscp.foundation.scala.play
 
-class AbstractCrudLogicModel {
+import scala.concurrent.ExecutionContext
 
+class AbstractCrudLogicModel {
+  //
 }

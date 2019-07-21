@@ -70,7 +70,7 @@ public class ServiceError extends RuntimeException {
     }
 
 
-    public static ServiceError badAuthorization(HttpMethod method, Class<?> entityType, String id) {
+    public static ServiceError badAuthorization(CrudAction method, Class<?> entityType, String id) {
         String description = "Client is not authorized to perform "
             + method.name() + " operation on " + entityType.getSimpleName();
 
@@ -83,7 +83,7 @@ public class ServiceError extends RuntimeException {
     }
 
 
-    public static ServiceError badAuthorization(HttpMethod method, Class<?> entityType) {
+    public static ServiceError badAuthorization(CrudAction method, Class<?> entityType) {
         return badAuthorization(method, entityType, null);
     }
 
