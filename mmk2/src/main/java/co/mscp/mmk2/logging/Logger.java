@@ -68,5 +68,4 @@ public abstract class Logger {
     public void error(String msg, Throwable th) {
         log(Level.ERROR, false, msg + "\n" + toString(th));
     }
-    
 }

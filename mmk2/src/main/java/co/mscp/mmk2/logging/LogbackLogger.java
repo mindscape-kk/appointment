@@ -20,7 +20,7 @@ public class LogbackLogger extends Logger {
         String msg = String.format(message, params);
         
         Marker marker = alert?ALERT_MAERKER:DUMP_MAERKER;
-    
+
         switch (level) {
             case INFO: impl.info(marker, msg); break;
             case WARN: impl.warn(marker, msg); break;

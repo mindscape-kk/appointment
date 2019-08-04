@@ -1,4 +1,4 @@
-package co.mscp.foundation.scala.common
+package co.mscp.mmk2.scala
 
 import java.net.URL
 

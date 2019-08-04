@@ -6,11 +6,13 @@ import co.mscp.appointment.service.resource.ResourceService
 import co.mscp.mmk2.net.{CrudAction, ServiceError}
 import javax.inject.{Inject, Singleton}
 
+import co.mscp.mmk2.scala.logging.Log
+
 import scala.concurrent.Future
 
 @Singleton
 class ResourceServiceImpl @Inject()(dao: ResourceDao, auth: AuthenticationService)
-  extends ResourceService
+  extends ResourceService with Log
 {
   private val cls = classOf[Resource]
 

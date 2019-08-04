@@ -125,6 +125,12 @@ public class ServiceError extends RuntimeException {
     }
 
 
+    public static ServiceError internal(Throwable th) {
+        return new ServiceError(new Data(Code.INTERNAL_SERVER_ERROR,
+            th.getMessage(), null, null, null));
+    }
+
+
     public static ServiceError clientError(String description) {
         return new ServiceError(new Data(Code.CLIENT_ERROR, description,
             null, null, null));

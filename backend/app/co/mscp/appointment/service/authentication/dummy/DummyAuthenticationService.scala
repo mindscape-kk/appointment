@@ -19,12 +19,12 @@ class DummyAuthenticationService extends AuthenticationService {
       .map(_.role)
       .getOrElse(UserRole.PUBLIC)
 
-  override def resolveInstitute(institute: String, token: String, action: CrudAction, cls: Class[_]): String = {
-    val resolvedInstitute = if (MY == institute)
+  override def resolveInstitute(institute: String, token: String,
+  action: CrudAction, cls: Class[_]): String =
+    if (MY == institute)
       getUser(token).map(_.domain).getOrElse(throw ServiceError.badAuthorization(action, cls))
     else
       institute
-    resolvedInstitute
-  }
+
 
 }

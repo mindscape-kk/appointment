@@ -2,8 +2,8 @@ package co.mscp.medicom.appointment.spec
 
 import java.net.URL
 
-import co.mscp.foundation.scala.common.{DockerParams, DockerUtil}
 import co.mscp.mmk2.net.NetworkUtil
+import co.mscp.mmk2.scala.{DockerParams, DockerUtil}
 
 
 object DockerHelper {
