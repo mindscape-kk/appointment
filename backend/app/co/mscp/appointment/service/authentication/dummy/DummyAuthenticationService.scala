@@ -9,8 +9,10 @@ class DummyAuthenticationService extends AuthenticationService {
   import AuthenticationService.MY
 
   override def getUser(token: String): Option[User] = token match {
-    case "mandy" => Some(User("helloUser", "hello@dummy.com", "Mandy", "Moor",
-      "Mindscape", UserRole.PATIENT))
+    case "mandy" => Some(User("helloUser", "mandy@test.com", "Mandy", "Moore",
+      "ACME", UserRole.PATIENT))
+    case "andy" => Some(User("helloUser", "andy@test.com", "Any", "Staffman",
+      "ACME", UserRole.STAFF))
     case _ => None
   }
 
@@ -25,6 +27,4 @@ class DummyAuthenticationService extends AuthenticationService {
       getUser(token).map(_.domain).getOrElse(throw ServiceError.badAuthorization(action, cls))
     else
       institute
-
-
 }
