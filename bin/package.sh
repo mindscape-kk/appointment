@@ -4,8 +4,8 @@ TAG=${1:-local-test}
 
 DOCKERINFO=$(sbt dockerinfo)
 
-VER=$(echo ${DOCKERINFO} | sed -n "s/\\[VAL\\] version: \(.*\)$/\1/p")
-IMG=$(echo ${DOCKERINFO} | sed -n "s/\\[VAL\\] dockerImageName: \(.*\)$/\1/p")
+VER=$(echo "${DOCKERINFO}" | sed -n "s/\\[VAL\\] version: \(.*\)$/\1/p")
+IMG=$(echo "${DOCKERINFO}" | sed -n "s/\\[VAL\\] dockerImageName: \(.*\)$/\1/p")
 
 sbt "project backend" docker:publishLocal
 docker tag "$IMG:$VER" "$IMG:$TAG"
