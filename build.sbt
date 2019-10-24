@@ -3,7 +3,7 @@ name := "Medicom Appointment Service"
 version := "0.1-SNAPSHOT"
 
 scalaVersion := "2.13.1"
-scalacOptions += "-target:12" // <-- java version : 12
+scalacOptions += "-target:13"
 
 lazy val mmk2 = project in file("mmk2")
 

@@ -1,9 +1,14 @@
+import com.typesafe.sbt.packager.docker.{DockerChmodType, DockerPermissionStrategy}
+
 name := "Medicom Appointment Backend"
 organization := "co.mscp"
 
 packageName in Docker := "appointment"
+dockerBaseImage := "openjdk:13"
 dockerRepository := Some("docker.mscp.co/medicom")
 dockerExposedPorts := Seq(9000)
+dockerChmodType := DockerChmodType.UserGroupWriteExecute
+dockerPermissionStrategy := DockerPermissionStrategy.Run
 
 // Guice
 libraryDependencies += guice
