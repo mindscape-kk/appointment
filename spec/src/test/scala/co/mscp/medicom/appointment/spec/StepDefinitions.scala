@@ -2,6 +2,7 @@ package co.mscp.medicom.appointment.spec
 
 import co.mscp.appointment.client.AppointmentClient
 import co.mscp.appointment.entity.Resource
+import co.mscp.mmk2.net.ServiceError
 import cucumber.api.PendingException
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers._
@@ -54,7 +55,7 @@ class StepDefinitions extends ScalaDsl with EN {
   }
 
   Given("""client holds valid token for own institute"""){ () =>
-    token = "mandy"
+    token = "andy"
     client = new AppointmentClient(host, "my", token)
   }
 
@@ -64,11 +65,28 @@ class StepDefinitions extends ScalaDsl with EN {
     client = new AppointmentClient(host, "my", token)
   }
 
+
+  Given("""client holds valid token for different institute"""){ () =>
+    token = "andy"
+    client = new AppointmentClient(host, "invalidInstitute", token)
+  }
+
+  When("client posts a new resource request for other institute"){ () =>
+    try {
+      outputResource = client.createResource(inputResource)
+    } catch {
+      case e:Exception =>
+        error = e
+        println(e.getMessage)
+    }
+  }
+
   Then("""response should be error"""){ () =>
     assert(error != null)
   }
 
   Then("""error type should be BAD_AUTHORIZATION"""){ () =>
-
+    assert(error != null)
+    assert(error.asInstanceOf[ServiceError].getData.code  == ServiceError.Code.BAD_AUTHORIZATION)
   }
 }

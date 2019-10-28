@@ -12,11 +12,11 @@ Feature: Resource
     Then response should be error
     And error type should be BAD_AUTHORIZATION
 
-#  Scenario: Client belonging to different institute cannot create resource
-#    Given client holds valid token for different institute
-#    When client posts a new resource request for other institute
-#    Then response should be error
-#    And error type should be BAD_AUTHORIZATION
+  Scenario: Client belonging to different institute cannot create resource
+    Given client holds valid token for different institute
+    When client posts a new resource request for other institute
+    Then response should be error
+    And error type should be BAD_AUTHORIZATION
 
 
 # Update resource
