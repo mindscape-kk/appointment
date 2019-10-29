@@ -9,6 +9,6 @@ trait ResourceDao {
 
   def update(resource: Resource): Future[Resource]
 
-  def get(id: String): Future[Resource]
+  def get(id: String): Future[Option[Resource]]
 
 }

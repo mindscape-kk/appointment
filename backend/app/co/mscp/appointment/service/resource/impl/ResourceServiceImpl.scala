@@ -5,13 +5,13 @@ import co.mscp.appointment.service.authentication.{AuthenticationService, UserRo
 import co.mscp.appointment.service.resource.ResourceService
 import co.mscp.mmk2.net.{CrudAction, ServiceError}
 import javax.inject.{Inject, Singleton}
-
 import co.mscp.mmk2.scala.logging.Log
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ResourceServiceImpl @Inject()(dao: ResourceDao, auth: AuthenticationService)
+                                   (implicit ec: ExecutionContext)
   extends ResourceService with Log
 {
   private val cls = classOf[Resource]
@@ -32,10 +32,19 @@ class ResourceServiceImpl @Inject()(dao: ResourceDao, auth: AuthenticationServic
     if(auth.getUserRole(resolvedInstitute, token) != UserRole.STAFF)
       throw ServiceError.badAuthorization(CrudAction.UPDATE, cls)
 
-    dao.update(resource)
+    if(resource.id.isEmpty)
+      throw ServiceError.badId(cls,null)
+
+    get(token,institute,resource.id.get).flatMap(r =>
+      if(r.isEmpty)
+        throw ServiceError.badId(cls,resource.id.get)
+      else
+        dao.update(resource))
+
+
   }
 
-  override def get(token: String, institute: String, id: String): Future[Resource] = {
+  override def get(token: String, institute: String, id: String): Future[Option[Resource]]  = {
     val resolvedInstitute = auth.resolveInstitute(institute, token, CrudAction.READ, cls)
 
     if(auth.getUserRole(resolvedInstitute, token) != UserRole.STAFF)

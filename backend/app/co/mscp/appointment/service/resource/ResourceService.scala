@@ -9,5 +9,5 @@ trait ResourceService {
 
   def update(token: String, institute: String, resource: Resource): Future[Resource]
 
-  def get(token: String, institute: String, id: String): Future[Resource]
+  def get(token: String, institute: String, id: String): Future[Option[Resource]]
 }

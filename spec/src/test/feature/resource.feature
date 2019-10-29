@@ -25,19 +25,24 @@ Feature: Resource
     Given client holds valid token for own institute
     When client put modified resource request for own institute
    Then response should be same as request
-#
-#  Scenario: Owner can modify information for each resource
-#    Given client holds valid token
-#    And desired resource does not exist
-#    When client put modified resource request for own institute
-#    Then response should be error
-#    And error type should be BAD_ID
-#
-#  Scenario: Client belonging to different institute cannot modify resource
-#    Given client holds valid token for different institute
-#    When client put modified resource request for own institute
-#    Then response should be error
-#    And error type should be BAD_AUTHORIZATION
+
+  Scenario: Owner can not  modify information with bad id
+    Given client holds valid token for own institute
+    When client put modified resource request for own institute with bad id
+    Then response should be error
+    And error type should be BAD_ID
+
+  Scenario: Owner can not  modify information with empty id
+    Given client holds valid token for own institute
+    When client put modified resource request for own institute with empty id
+    Then response should be error
+    And error type should be BAD_ID
+
+  Scenario: Client belonging to different institute cannot modify resource
+    Given client holds valid token for different institute
+    When client put modified resource request for other institute
+    Then response should be error
+    And error type should be BAD_AUTHORIZATION
 
 
 # Delete resource

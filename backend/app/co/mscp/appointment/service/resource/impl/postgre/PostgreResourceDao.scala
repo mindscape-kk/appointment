@@ -53,12 +53,13 @@ class PostgreResourceDao @Inject()(protected val dbConfigProvider: DatabaseConfi
 
   /** Update given resource */
   def update(resource: Resource): Future[Resource] =
-    db.run(resources.filter(_.id === resource.id).update(resource)).map(numOfRecords => if (numOfRecords==1) resource else null)
+    db.run(resources.filter(_.id === resource.id).update(resource))
+      .map(numOfRecords => if (numOfRecords==1) resource else null)
 
 
   /** get  resource by id */
-  def get(id: String): Future[Resource] =
-    db.run(resources.filter(_.id === id).result.head)
+  def get(id: String): Future[Option[Resource]] =
+    db.run(resources.filter(_.id === id).result.headOption)
 
 
   /** Insert new resource */

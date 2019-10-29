@@ -78,6 +78,17 @@ class StepDefinitions extends ScalaDsl with EN {
     }
   }
 
+  When("""client put modified resource request for other institute"""){ () =>
+    try {
+      inputResource = R1.copy(description = Some("updated description"))
+      outputResource = client.updateResource(inputResource)
+    } catch {
+      case e:Exception =>
+        error = e
+        println(e.getMessage)
+    }
+  }
+
   Then("""response should be error"""){ () =>
     assert(error != null)
   }
@@ -100,5 +111,34 @@ class StepDefinitions extends ScalaDsl with EN {
         error = e
         println(e.getMessage)
     }
+  }
+
+
+  When("""client put modified resource request for own institute with bad id"""){ () =>
+    try {
+      inputResource = R1.copy(id=Some("BADID"))
+
+      outputResource = client.updateResource(inputResource)
+    } catch {
+      case e:Exception =>
+        error = e
+        println(e.getMessage)
+    }
+  }
+  When("""client put modified resource request for own institute with empty id"""){ () =>
+    try {
+      inputResource = R1.copy(id=Some(null))
+
+      outputResource = client.updateResource(inputResource)
+    } catch {
+      case e:Exception =>
+        error = e
+        println(e.getMessage)
+    }
+  }
+
+  Then("""error type should be BAD_ID"""){ () =>
+    assert(error != null)
+    assert(error.asInstanceOf[ServiceError].getData.code  == ServiceError.Code.BAD_ID)
   }
 }
