@@ -1,10 +1,10 @@
 Feature: Resource
 
-  Scenario: Client can create new resource
-    Given client holds valid token for own institute
-    When client posts a new resource request
-    Then response should be same as request
-    And ID in response should not be null
+ Scenario: Client can create new resource
+   Given client holds valid token for own institute
+   When client posts a new resource request
+   Then response should be same as request
+   And ID in response should not be null
 
   Scenario: Unauthorized client cannot create new resource
     Given client holds invalid token for own institute
@@ -21,10 +21,10 @@ Feature: Resource
 
 # Update resource
 
-#  Scenario: Owner can modify information for each resource
-#    Given client holds valid token
-#    When client put modified resource request for own institute
-#    Then response should be same as request
+  Scenario: Owner can modify information for each resource
+    Given client holds valid token for own institute
+    When client put modified resource request for own institute
+   Then response should be same as request
 #
 #  Scenario: Owner can modify information for each resource
 #    Given client holds valid token

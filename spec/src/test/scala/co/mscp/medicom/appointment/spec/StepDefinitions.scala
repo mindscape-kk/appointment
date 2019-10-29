@@ -16,15 +16,15 @@ class StepDefinitions extends ScalaDsl with EN {
   private var encryptionKey: String = _
   private var error: Exception = _
 
-  private val inputResource = new Resource("testType", "testName",
+  private val R1 = new Resource("testType", "testName",
     "Test Description",  None /* TODO more values */)
 
+  private var inputResource: Resource = _
   private var outputResource: Resource = _
 
 
   Before() { (_) =>
     DockerHelper.runAll()
-    client = new AppointmentClient(host, "testInstitute", "mandy")
   }
 
   Given("client has user token {string} and encryption key {string}"){ (token:String,key:String) =>
@@ -33,6 +33,7 @@ class StepDefinitions extends ScalaDsl with EN {
 
   When("client posts a new resource request"){ () =>
     try {
+      inputResource = R1
       outputResource = client.createResource(inputResource)
     } catch {
       case e:Exception =>
@@ -42,12 +43,7 @@ class StepDefinitions extends ScalaDsl with EN {
   }
 
   Then("response should be same as request"){ () =>
-    outputResource should have (
-      'type ("testType"),
-      'name ("testName"),
-      'description (Some("Test Description")),
-      'userDefinedProperties (None)
-    )
+    outputResource === inputResource
   }
 
   Then("ID in response should not be null"){ () =>
@@ -73,6 +69,7 @@ class StepDefinitions extends ScalaDsl with EN {
 
   When("client posts a new resource request for other institute"){ () =>
     try {
+      inputResource = R1
       outputResource = client.createResource(inputResource)
     } catch {
       case e:Exception =>
@@ -88,5 +85,20 @@ class StepDefinitions extends ScalaDsl with EN {
   Then("""error type should be BAD_AUTHORIZATION"""){ () =>
     assert(error != null)
     assert(error.asInstanceOf[ServiceError].getData.code  == ServiceError.Code.BAD_AUTHORIZATION)
+  }
+
+
+
+  When("""client put modified resource request for own institute"""){ () =>
+    try {
+      inputResource = R1
+      val create : Resource = client.createResource(inputResource)
+      inputResource = create.copy(description = Some("updated description"))
+      outputResource = client.updateResource(inputResource)
+    } catch {
+      case e:Exception =>
+        error = e
+        println(e.getMessage)
+    }
   }
 }

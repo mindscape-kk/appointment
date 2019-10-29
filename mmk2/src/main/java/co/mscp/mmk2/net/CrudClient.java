@@ -225,12 +225,25 @@ public class CrudClient<T> {
     }
     
     
-    public T update(T updatedEntity) throws ServiceError, IOException
+    public T update(T updatedEntity, Map<String, String> params) throws ServiceError, IOException
     {
-        HttpPut request = new HttpPut(host);
+        URIBuilder builder = uri("");
+
+        if(params != null) {
+            params.forEach(builder::addParameter);
+        }
+
+        HttpPut request = new HttpPut(build(builder));
+
         request.setEntity(new StringEntity(Json.toString(updatedEntity),
             ContentType.APPLICATION_JSON));
         return performRequest(request, typeReference, null);
+    }
+
+    public T update(T updatedEntity) throws ServiceError, IOException
+    {
+
+        return update(updatedEntity, null);
     }
     
     

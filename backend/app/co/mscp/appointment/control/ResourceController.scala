@@ -22,4 +22,9 @@ class ResourceController @Inject()(cc: ControllerComponents,
     resource => service.create(token, institute, resource)
   }
 
+  def update(institute: String, token: String): Action[JsValue] = createAction {
+    resource => service.update(token, institute, resource)
+  }
+
+
 }

@@ -29,6 +29,10 @@ public class ServiceError extends RuntimeException {
 
 
     public final static class Data {
+        private Data(){
+            this(null,null,null,null,null);
+        }
+
         public static Data of(String json) throws IOException {
             return Json.parse(json, Data.class);
         }

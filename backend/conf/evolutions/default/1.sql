@@ -8,7 +8,10 @@ CREATE TABLE "RESOURCE" (
     "DESCRIPTION" text,
     "USER_DEFINED_PROPERTIES" jsonb,
     PRIMARY KEY ("ID")
+    --TODO: add time stamp for data create/update
+    --TODO: flag for record status [eg: delete resource]
 );
+
 
 
 

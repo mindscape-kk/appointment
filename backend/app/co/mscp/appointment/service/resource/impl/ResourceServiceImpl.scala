@@ -25,4 +25,22 @@ class ResourceServiceImpl @Inject()(dao: ResourceDao, auth: AuthenticationServic
 
     dao.create(resource)
   }
+
+  override def update(token: String, institute: String, resource: Resource): Future[Resource] = {
+    val resolvedInstitute = auth.resolveInstitute(institute, token, CrudAction.UPDATE, cls)
+
+    if(auth.getUserRole(resolvedInstitute, token) != UserRole.STAFF)
+      throw ServiceError.badAuthorization(CrudAction.UPDATE, cls)
+
+    dao.update(resource)
+  }
+
+  override def get(token: String, institute: String, id: String): Future[Resource] = {
+    val resolvedInstitute = auth.resolveInstitute(institute, token, CrudAction.READ, cls)
+
+    if(auth.getUserRole(resolvedInstitute, token) != UserRole.STAFF)
+      throw ServiceError.badAuthorization(CrudAction.READ, cls)
+
+    dao.get(id)
+  }
 }
