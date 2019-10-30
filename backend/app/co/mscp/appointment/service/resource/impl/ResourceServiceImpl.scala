@@ -44,6 +44,24 @@ class ResourceServiceImpl @Inject()(dao: ResourceDao, auth: AuthenticationServic
 
   }
 
+  override def delete(token: String, institute: String, id: String): Future[Resource] = {
+    val resolvedInstitute = auth.resolveInstitute(institute, token, CrudAction.DELETE, cls)
+
+    if(auth.getUserRole(resolvedInstitute, token) != UserRole.STAFF)
+      throw ServiceError.badAuthorization(CrudAction.DELETE, cls)
+
+    if(id ==null || id.isEmpty)
+      throw ServiceError.badId(cls,null)
+
+    get(token,institute,id).flatMap(r =>
+      if(r.isEmpty)
+        throw ServiceError.badId(cls,id)
+      else
+        dao.delete(r.get))
+
+
+  }
+
   override def get(token: String, institute: String, id: String): Future[Option[Resource]]  = {
     val resolvedInstitute = auth.resolveInstitute(institute, token, CrudAction.READ, cls)
 

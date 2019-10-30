@@ -12,4 +12,5 @@ class AppointmentClient(host: String, institute: String, token: String) {
 
   def createResource(r: Resource): Resource = resource.create(r, param)
   def updateResource(r: Resource): Resource = resource.update(r, param)
+  def deleteResource(id: String): Resource = resource.delete(id, param)
 }

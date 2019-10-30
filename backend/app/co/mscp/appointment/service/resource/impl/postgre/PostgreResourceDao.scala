@@ -56,6 +56,11 @@ class PostgreResourceDao @Inject()(protected val dbConfigProvider: DatabaseConfi
     db.run(resources.filter(_.id === resource.id).update(resource))
       .map(numOfRecords => if (numOfRecords==1) resource else null)
 
+  /** delete given resource */
+  def delete(resource: Resource): Future[Resource] =
+    db.run(resources.filter(_.id === resource.id).delete
+      .map(numOfRecords => if (numOfRecords==1) resource else null))
+
 
   /** get  resource by id */
   def get(id: String): Future[Option[Resource]] =

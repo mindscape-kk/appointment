@@ -34,6 +34,7 @@ class StepDefinitions extends ScalaDsl with EN {
   When("client posts a new resource request"){ () =>
     try {
       inputResource = R1
+      outputResource = null
       outputResource = client.createResource(inputResource)
     } catch {
       case e:Exception =>
@@ -70,6 +71,7 @@ class StepDefinitions extends ScalaDsl with EN {
   When("client posts a new resource request for other institute"){ () =>
     try {
       inputResource = R1
+      outputResource = null
       outputResource = client.createResource(inputResource)
     } catch {
       case e:Exception =>
@@ -81,6 +83,7 @@ class StepDefinitions extends ScalaDsl with EN {
   When("""client put modified resource request for other institute"""){ () =>
     try {
       inputResource = R1.copy(description = Some("updated description"))
+      outputResource = null
       outputResource = client.updateResource(inputResource)
     } catch {
       case e:Exception =>
@@ -103,6 +106,7 @@ class StepDefinitions extends ScalaDsl with EN {
   When("""client put modified resource request for own institute"""){ () =>
     try {
       inputResource = R1
+      outputResource = null
       val create : Resource = client.createResource(inputResource)
       inputResource = create.copy(description = Some("updated description"))
       outputResource = client.updateResource(inputResource)
@@ -117,7 +121,7 @@ class StepDefinitions extends ScalaDsl with EN {
   When("""client put modified resource request for own institute with bad id"""){ () =>
     try {
       inputResource = R1.copy(id=Some("BADID"))
-
+      outputResource = null
       outputResource = client.updateResource(inputResource)
     } catch {
       case e:Exception =>
@@ -128,7 +132,7 @@ class StepDefinitions extends ScalaDsl with EN {
   When("""client put modified resource request for own institute with empty id"""){ () =>
     try {
       inputResource = R1.copy(id=Some(null))
-
+      outputResource = null
       outputResource = client.updateResource(inputResource)
     } catch {
       case e:Exception =>
@@ -141,4 +145,59 @@ class StepDefinitions extends ScalaDsl with EN {
     assert(error != null)
     assert(error.asInstanceOf[ServiceError].getData.code  == ServiceError.Code.BAD_ID)
   }
+
+
+  When("""client request delete of resource with given ID for own institute"""){ () =>
+    try {
+      inputResource = R1
+      outputResource = null
+      val create : Resource = client.createResource(inputResource)
+      inputResource = create;
+      outputResource = client.deleteResource(inputResource.id.get)
+    } catch {
+      case e:Exception =>
+        error = e
+        println(e.getMessage)
+    }
+  }
+  Then("""response should contain the deleted resource"""){ () =>
+    outputResource === inputResource
+  }
+
+  When("""client delete resource request for own institute with bad id"""){ () =>
+    try {
+      inputResource = R1.copy(id=Some("BADID"))
+
+      outputResource = client.deleteResource(inputResource.id.get)
+    } catch {
+      case e:Exception =>
+        error = e
+        println(e.getMessage)
+    }
+  }
+  When("""client delete  resource request for own institute with empty id"""){ () =>
+    try {
+      inputResource = R1.copy(id=Some(null))
+
+      outputResource = client.deleteResource(null)
+    } catch {
+      case e:Exception =>
+        error = e
+        println(e.getMessage)
+    }
+  }
+
+  When("""client delete resource request for other institute"""){ () =>
+    try {
+      inputResource = R1
+      outputResource = null
+      outputResource = client.deleteResource("someid")
+    } catch {
+      case e:Exception =>
+        error = e
+        println(e.getMessage)
+    }
+  }
+
+
 }

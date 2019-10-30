@@ -5,9 +5,8 @@ import co.mscp.appointment.service.authentication.AuthenticationService
 import co.mscp.appointment.service.resource.ResourceService
 import co.mscp.mmk2.scala.play.AbstractCrudController
 import javax.inject.Inject
-
 import play.api.libs.json.JsValue
-import play.api.mvc.{Action, ControllerComponents}
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 
 import scala.concurrent.ExecutionContext
 
@@ -25,6 +24,10 @@ class ResourceController @Inject()(cc: ControllerComponents,
   def update(institute: String, token: String): Action[JsValue] = createAction {
     resource => service.update(token, institute, resource)
   }
+
+  def delete(institute: String, token: String,id : String): Action[AnyContent] = deleteAction {
+  () => service.delete(token, institute, id)
+}
 
 
 }

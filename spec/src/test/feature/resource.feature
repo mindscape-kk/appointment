@@ -47,20 +47,25 @@ Feature: Resource
 
 # Delete resource
 
-#  Scenario: Owner can delete given resource
-#    Given client holds valid token
-#    When client request delete of resource with given ID for own institute
-#    Then response should contain the deleted resource
-#
-#  Scenario: Owner can delete given resource
-#    Given client holds valid token
-#    And desired resource does not exist
-#    When client request delete of resource with given ID for own institute
-#    Then response should be error
-#    And error type should be BAD_ID
-#
-#  Scenario: Client belonging to different institute cannot delete resource
-#    Given client holds valid token for different institute
-#    When client request delete of resource with given ID for own institute
-#    Then response should be error
-#    And error type should be BAD_AUTHORIZATION
+ Scenario: Owner can delete given resource
+   Given client holds valid token for own institute
+   When client request delete of resource with given ID for own institute
+   Then response should contain the deleted resource
+
+  Scenario: Owner can not  delete information with bad id
+    Given client holds valid token for own institute
+    When client delete resource request for own institute with bad id
+    Then response should be error
+    And error type should be BAD_ID
+
+  Scenario: Owner can not  delete information with empty id
+    Given client holds valid token for own institute
+    When client delete  resource request for own institute with empty id
+    Then response should be error
+    And error type should be BAD_ID
+
+  Scenario: Client belonging to different institute cannot delete resource
+    Given client holds valid token for different institute
+    When client delete resource request for other institute
+    Then response should be error
+    And error type should be BAD_AUTHORIZATION

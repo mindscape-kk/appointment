@@ -272,8 +272,14 @@ public class CrudClient<T> {
     }
     
     
-    public T delete(String id) throws ServiceError, IOException {
-        HttpDelete request = new HttpDelete(host + "/" + id);
+    public T delete(String id, Map<String, String> params) throws ServiceError, IOException {
+        URIBuilder builder = uri("/" + id);
+
+        if(params != null) {
+            params.forEach(builder::addParameter);
+        }
+
+        HttpDelete request = new HttpDelete(build(builder));
         return performRequest(request, typeReference, null);
     }
 }
