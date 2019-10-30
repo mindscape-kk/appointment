@@ -2,9 +2,13 @@ package co.mscp.mmk2.scala.play
 
 import java.util.concurrent.TimeUnit
 
+import akka.stream.scaladsl.Sink
+import akka.util.ByteString
 import co.mscp.mmk2.net.{ServiceError, ValidationIssue}
-import play.api.libs.json._
-import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
+import play.api.http.Status.REQUEST_ENTITY_TOO_LARGE
+import play.api.libs.json.{JsValue, _}
+import play.api.libs.streams.Accumulator
+import play.api.mvc.{AbstractController, Action, AnyContent, BodyParser, ControllerComponents, Result}
 
 import collection.JavaConverters._
 import scala.concurrent.duration.Duration
@@ -21,10 +25,18 @@ class AbstractCrudController[E <: AnyRef](cc: ControllerComponents, cls: Class[_
     })
 
 
+
+  private def emptyJson: BodyParser[JsValue] = ignoreJs((null))
+
+  private def ignoreJs[JsValue](body: JsValue): BodyParser[JsValue] = BodyParser("ignoreJs") { _ =>
+    Accumulator.done(Right(body))
+  }
+
   def deleteAction(f: () => Future[E])(
-    implicit reads: Reads[E], writes: Writes[E]): Action[AnyContent] =
-   //TODO: remove this hack on delete action
-    Action { request:Any  => Ok( Json.toJson(Await.result(f.apply(),Duration.create(10,TimeUnit.SECONDS))))}
+    implicit reads: Reads[E], writes: Writes[E]): Action[JsValue] =
+    Action.async(emptyJson)(r => r match {
+      case _ => f.apply().map(r => Created(Json.toJson(r)))
+    })
 
 
   def updateAction(f: E => Future[E])(
