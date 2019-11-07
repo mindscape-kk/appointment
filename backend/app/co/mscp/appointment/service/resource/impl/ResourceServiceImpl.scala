@@ -40,8 +40,6 @@ class ResourceServiceImpl @Inject()(dao: ResourceDao, auth: AuthenticationServic
         throw ServiceError.badId(cls,resource.id.get)
       else
         dao.update(resource))
-
-
   }
 
   override def delete(token: String, institute: String, id: String): Future[Resource] = {
@@ -50,16 +48,14 @@ class ResourceServiceImpl @Inject()(dao: ResourceDao, auth: AuthenticationServic
     if(auth.getUserRole(resolvedInstitute, token) != UserRole.STAFF)
       throw ServiceError.badAuthorization(CrudAction.DELETE, cls)
 
-    if(id ==null || id.isEmpty)
-      throw ServiceError.badId(cls,null)
+    if(id == null || id.isEmpty)
+      throw ServiceError.badId(cls, null)
 
     get(token,institute,id).flatMap(r =>
       if(r.isEmpty)
         throw ServiceError.badId(cls,id)
       else
         dao.delete(r.get))
-
-
   }
 
   override def get(token: String, institute: String, id: String): Future[Option[Resource]]  = {

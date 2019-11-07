@@ -8,5 +8,5 @@ import org.junit.runner.RunWith
 @CucumberOptions(
   plugin = Array("pretty"),
   glue = Array("co.mscp.medicom.appointment.spec"),
-  features = Array("src/test/feature"))
+  features = Array("spec/src/test/feature"))
 class CucumberRunner

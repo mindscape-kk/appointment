@@ -26,8 +26,8 @@ class ResourceController @Inject()(cc: ControllerComponents,
   }
 
   def delete(institute: String, token: String,id : String): Action[JsValue] = deleteAction {
-  () => service.delete(token, institute, id)
-}
+    () => service.delete(token, institute, id)
+  }
 
 
 }

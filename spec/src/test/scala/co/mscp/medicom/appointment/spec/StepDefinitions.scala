@@ -152,7 +152,7 @@ class StepDefinitions extends ScalaDsl with EN {
       inputResource = R1
       outputResource = null
       val create : Resource = client.createResource(inputResource)
-      inputResource = create;
+      inputResource = create
       outputResource = client.deleteResource(inputResource.id.get)
     } catch {
       case e:Exception =>
@@ -178,7 +178,6 @@ class StepDefinitions extends ScalaDsl with EN {
   When("""client delete  resource request for own institute with empty id"""){ () =>
     try {
       inputResource = R1.copy(id=Some(null))
-
       outputResource = client.deleteResource(null)
     } catch {
       case e:Exception =>
