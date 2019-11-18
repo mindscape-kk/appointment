@@ -2,5 +2,5 @@
 GET /v1/system/health co.mscp.appointment.control.SystemController.getHealth
 
 POST /v1/:institute/resource co.mscp.appointment.control.ResourceController.create(institute: String,token: String)
-PUT /v1/:institute/resource co.mscp.appointment.control.ResourceController.update(institute: String,token: String)
+PUT /v1/:institute/resource/:id  co.mscp.appointment.control.ResourceController.update(institute: String,token: String,id :String)
 DELETE /v1/:institute/resource/:id co.mscp.appointment.control.ResourceController.delete(institute: String,token: String, id :String)

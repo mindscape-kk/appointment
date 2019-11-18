@@ -15,10 +15,14 @@ case class Resource(
   def this(t: String, name: String, description: String,
     userDefinedProperties: Option[JsValue]) =
       this(None, t, name, Some(description), userDefinedProperties)
+
+  def withId(id : String) : Resource =  new Resource(Some(id), `type`, name, description, userDefinedProperties);
 }
 
 
 object Resource {
   implicit val writes: Writes[Resource] = Json.writes[Resource]
   implicit val reads: Reads[Resource] = Json.reads[Resource]
+
+
 }

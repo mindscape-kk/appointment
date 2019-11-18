@@ -11,6 +11,6 @@ class AppointmentClient(host: String, institute: String, token: String) {
     new CrudClient[Resource](s"$host/v1/$institute/resource", classOf[Resource])
 
   def createResource(r: Resource): Resource = resource.create(r, param)
-  def updateResource(r: Resource): Resource = resource.update(r, param)
+  def updateResource(id: String, r: Resource): Resource = resource.update(id,r, param)
   def deleteResource(id: String): Resource = resource.delete(id, param)
 }

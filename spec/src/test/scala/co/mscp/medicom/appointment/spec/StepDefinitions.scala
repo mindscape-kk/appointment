@@ -84,7 +84,7 @@ class StepDefinitions extends ScalaDsl with EN {
     try {
       inputResource = R1.copy(description = Some("updated description"))
       outputResource = null
-      outputResource = client.updateResource(inputResource)
+      outputResource = client.updateResource("1",inputResource)
     } catch {
       case e:Exception =>
         error = e
@@ -109,7 +109,7 @@ class StepDefinitions extends ScalaDsl with EN {
       outputResource = null
       val create : Resource = client.createResource(inputResource)
       inputResource = create.copy(description = Some("updated description"))
-      outputResource = client.updateResource(inputResource)
+      outputResource = client.updateResource(inputResource.id.get,inputResource)
     } catch {
       case e:Exception =>
         error = e
@@ -122,7 +122,7 @@ class StepDefinitions extends ScalaDsl with EN {
     try {
       inputResource = R1.copy(id=Some("BADID"))
       outputResource = null
-      outputResource = client.updateResource(inputResource)
+      outputResource = client.updateResource(inputResource.id.get,inputResource)
     } catch {
       case e:Exception =>
         error = e
@@ -133,7 +133,7 @@ class StepDefinitions extends ScalaDsl with EN {
     try {
       inputResource = R1.copy(id=Some(null))
       outputResource = null
-      outputResource = client.updateResource(inputResource)
+      outputResource = client.updateResource(inputResource.id.get,inputResource)
     } catch {
       case e:Exception =>
         error = e
