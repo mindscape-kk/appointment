@@ -38,7 +38,7 @@ trait TimeslotComponent {
 
 
 
-class PostgreTimeslotDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) extends TimeslotComponent with TimeslotPatternDao with HasDatabaseConfigProvider[MSCPPostgresProfile] {
+class PostgreTimeslotPatternDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) extends TimeslotComponent with TimeslotPatternDao with HasDatabaseConfigProvider[MSCPPostgresProfile] {
 
   import profile.api._
 
