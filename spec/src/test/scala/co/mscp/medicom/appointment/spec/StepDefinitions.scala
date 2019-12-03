@@ -1,7 +1,9 @@
 package co.mscp.medicom.appointment.spec
 
+import java.time.LocalDateTime
+
 import co.mscp.appointment.client.AppointmentClient
-import co.mscp.appointment.entity.Resource
+import co.mscp.appointment.entity.{Resource, Timeslot}
 import co.mscp.mmk2.net.ServiceError
 import cucumber.api.PendingException
 import cucumber.api.scala.{EN, ScalaDsl}
@@ -19,9 +21,13 @@ class StepDefinitions extends ScalaDsl with EN {
   private val R1 = new Resource("testType", "testName",
     "Test Description",  None /* TODO more values */)
 
+  private val TS1 = new Timeslot(None,"",LocalDateTime.now(),5,None,true,false)
+
   private var inputResource: Resource = _
   private var outputResource: Resource = _
 
+  private var inputTimeslot: Timeslot = _
+  private var outputTimeslot: Timeslot = _
 
   Before() { (_) =>
     DockerHelper.runAll()
@@ -47,8 +53,16 @@ class StepDefinitions extends ScalaDsl with EN {
     outputResource === inputResource
   }
 
+  Then("timeslot response should be same as request"){ () =>
+    outputTimeslot === inputTimeslot
+  }
+
   Then("ID in response should not be null"){ () =>
     outputResource.id should not be null
+  }
+
+  Then("ID in timeslot response should not be null"){ () =>
+    outputTimeslot.id should not be null
   }
 
   Given("""client holds valid token for own institute"""){ () =>
@@ -198,5 +212,19 @@ class StepDefinitions extends ScalaDsl with EN {
     }
   }
 
+
+  When("""client posts a new timeslot request with a valid resource"""){ () =>
+    try {
+
+      inputResource = R1
+      outputResource =  client.createResource(inputResource)
+      inputTimeslot = TS1.withResourceId(outputResource.id.get)
+      outputTimeslot = client.createTimeslot(outputResource.id.get,inputTimeslot)
+    } catch {
+      case e:Exception =>
+        error = e
+        println(e.getMessage)
+    }
+  }
 
 }
