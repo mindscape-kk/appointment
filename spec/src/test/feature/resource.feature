@@ -69,3 +69,12 @@ Feature: Resource
     When client delete resource request for other institute
     Then response should be error
     And error type should be BAD_AUTHORIZATION
+
+
+# create timeslot
+
+  Scenario: Client can create new resource timeslot
+    Given client holds valid token for own institute
+    When client posts a new timeslot request with a valid resource
+    Then timeslot response should be same as request
+    And ID in timeslot response should not be null
