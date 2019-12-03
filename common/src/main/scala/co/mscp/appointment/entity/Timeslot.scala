@@ -7,19 +7,20 @@ import play.api.libs.json.{Json, Reads, Writes}
 
 case class Timeslot(
                      id: Option[String],
+                     resourceId: String,
                      begin: LocalDateTime,
                      duration: Int,
                      assignee: Option[String],
                      confirmed: Boolean,
                      cancelRequest: Boolean) {
-  def this( begin: LocalDateTime,
+  def this( resourceId: String,begin: LocalDateTime,
             duration: Int,
             assignee: String,
             confirmed: Boolean,
             cancelRequest: Boolean) =
-    this(None, begin, duration, Some(assignee), confirmed,cancelRequest)
+    this(None,resourceId, begin, duration, Some(assignee), confirmed,cancelRequest)
 
-    def withId(id: String): Timeslot = new Timeslot(Some(id), begin, duration, assignee, confirmed,cancelRequest);
+    def withId(id: String): Timeslot = new Timeslot(Some(id),resourceId, begin, duration, assignee, confirmed,cancelRequest);
 }
 
 

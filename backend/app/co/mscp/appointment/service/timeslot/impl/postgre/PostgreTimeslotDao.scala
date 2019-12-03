@@ -19,6 +19,7 @@ trait TimeslotComponent {
     /** The ID column, which is the primary key */
     def id = column[String]("ID", O.PrimaryKey,O.AutoInc)
 
+    def resourceId = column[String]("RESOURCE_ID")
 
     def begin = column[LocalDateTime]("BEGIN")
 
@@ -33,7 +34,7 @@ trait TimeslotComponent {
     def cancelRequest = column[Boolean]("CANCEL_REQUEST")
 
 
-    def * = (id?, begin, duration, assignee?, confirmed,cancelRequest) <> ((Timeslot.apply _).tupled, Timeslot.unapply _)
+    def * = (id?,resourceId, begin, duration, assignee?, confirmed,cancelRequest) <> ((Timeslot.apply _).tupled, Timeslot.unapply _)
   }
 
 }

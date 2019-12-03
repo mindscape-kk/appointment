@@ -15,7 +15,8 @@ CREATE TABLE "RESOURCE" (
 );
 
 CREATE TABLE "TIMESLOT" (
-    "ID" text NOT NULL DEFAULT 'RES'||nextval('TIMESLOT_SEQ'::regclass)::TEXT,
+    "ID" text NOT NULL DEFAULT 'TS'||nextval('TIMESLOT_SEQ'::regclass)::TEXT,
+    "RESOURCE_ID" NOT NULL text,
     "BEGIN" timestamp,
     "DURATION" integer,
     "ASSIGNEE" text,
@@ -26,7 +27,8 @@ CREATE TABLE "TIMESLOT" (
 );
 
 CREATE TABLE "TIMESLOT_PATTERN" (
-    "ID" text NOT NULL DEFAULT 'RES'||nextval('TIMESLOT_PATTERN_SEQ'::regclass)::TEXT,
+    "ID" text NOT NULL DEFAULT 'TSP'||nextval('TIMESLOT_PATTERN_SEQ'::regclass)::TEXT,
+    "RESOURCE_ID" NOT NULL text,
     "START_DATE" date,
     "END_DATE" date,
     "START_TIME" timestamp,

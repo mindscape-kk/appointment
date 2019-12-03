@@ -19,6 +19,8 @@ trait TimeslotComponent {
     /** The ID column, which is the primary key */
     def id = column[String]("ID", O.PrimaryKey,O.AutoInc)
 
+    def resourceId = column[String]("RESOURCE_ID")
+
     def startDate = column[LocalDate]("START_DATE")
 
     def endDate = column[LocalDate]("END_DATE")
@@ -31,7 +33,7 @@ trait TimeslotComponent {
 
     def duration = column[Int]("DURATION")
 
-    def * = (id?, startDate, endDate, startTime,repeatPerDay,repeatOnDays,duration) <> ((TimeslotPattern.apply _).tupled, TimeslotPattern.unapply _)
+    def * = (id?,resourceId, startDate, endDate, startTime,repeatPerDay,repeatOnDays,duration) <> ((TimeslotPattern.apply _).tupled, TimeslotPattern.unapply _)
   }
 
 }
