@@ -21,6 +21,7 @@ case class Timeslot(
     this(None,resourceId, begin, duration, Some(assignee), confirmed,cancelRequest)
 
     def withId(id: String): Timeslot = new Timeslot(Some(id),resourceId, begin, duration, assignee, confirmed,cancelRequest);
+    def withResourceId(resourceId: String ): Timeslot = new Timeslot(id,resourceId, begin, duration, assignee, confirmed,cancelRequest);
 }
 
 

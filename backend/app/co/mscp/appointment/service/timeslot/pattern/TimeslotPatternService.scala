@@ -5,7 +5,7 @@ import co.mscp.appointment.entity.TimeslotPattern
 import scala.concurrent.Future
 
 trait TimeslotPatternService {
-  def create(token: String, institute: String, pattern: TimeslotPattern): Future[TimeslotPattern]
+  def create(token: String, institute: String,resourceId: String , pattern: TimeslotPattern): Future[TimeslotPattern]
 
   def update(token: String, institute: String,id : String, pattern: TimeslotPattern): Future[TimeslotPattern]
 

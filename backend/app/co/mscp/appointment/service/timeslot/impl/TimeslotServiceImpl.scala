@@ -17,13 +17,13 @@ class TimeslotServiceImpl @Inject()(dao: TimeslotDao, auth: AuthenticationServic
   private val cls = classOf[Timeslot]
 
 
-  override def create(token: String, institute: String, timeslot: Timeslot): Future[Timeslot] = {
+  override def create(token: String, institute: String,resourceId: String , timeslot: Timeslot): Future[Timeslot] = {
     val resolvedInstitute = auth.resolveInstitute(institute, token, CrudAction.CREATE, cls)
 
     if(auth.getUserRole(resolvedInstitute, token) != UserRole.STAFF)
       throw ServiceError.badAuthorization(CrudAction.CREATE, cls)
 
-    dao.create(timeslot)
+    dao.create(timeslot.withResourceId(resourceId))
   }
 
   override def update(token: String, institute: String, id: String, timeslot: Timeslot): Future[Timeslot] = {

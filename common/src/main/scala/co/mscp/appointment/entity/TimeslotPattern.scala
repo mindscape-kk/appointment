@@ -25,6 +25,7 @@ case class TimeslotPattern(
     this(None,resourceId, startDate, endDate, startTime,repeatPerDay,repeatOnDays,duration)
 
     def withId(id: String): TimeslotPattern = new TimeslotPattern(Some(id),resourceId,  startDate, endDate, startTime,repeatPerDay,repeatOnDays,duration);
+    def withResourceId(resourceId: String ): TimeslotPattern = new TimeslotPattern(id,resourceId,  startDate, endDate, startTime,repeatPerDay,repeatOnDays,duration);
 }
 
 object TimeslotPattern {
