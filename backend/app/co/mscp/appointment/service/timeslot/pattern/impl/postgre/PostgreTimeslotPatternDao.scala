@@ -15,7 +15,7 @@ trait TimeslotComponent {
 
   import profile.api._
 
-  class TimeslotPatternTable(tag: Tag) extends Table[TimeslotPattern](tag, "TIMESLOT") {
+  class TimeslotPatternTable(tag: Tag) extends Table[TimeslotPattern](tag, "TIMESLOT_PATTERN") {
     /** The ID column, which is the primary key */
     def id = column[String]("ID", O.PrimaryKey,O.AutoInc)
 
