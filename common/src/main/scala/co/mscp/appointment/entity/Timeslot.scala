@@ -2,7 +2,6 @@ package co.mscp.appointment.entity
 
 import java.time.LocalDateTime
 
-import org.joda.time.DateTime
 import play.api.libs.json.{Json, Reads, Writes}
 
 
